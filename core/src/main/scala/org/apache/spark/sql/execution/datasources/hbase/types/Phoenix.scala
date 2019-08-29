@@ -49,6 +49,8 @@ class Phoenix(f:Option[Field] = None) extends SHCDataType {
       case data: Long => PLong.INSTANCE.toBytes(data)
       case data: Short => PSmallint.INSTANCE.toBytes(data)
       case data: String => PVarchar.INSTANCE.toBytes(data)
+      case data: java.sql.Timestamp => PTimestamp.INSTANCE.toBytes(data)
+      case data: java.sql.Date => PDate.INSTANCE.toBytes(data)
       case _ => throw new UnsupportedOperationException(s"unsupported data type $input")
     }
   }
@@ -101,6 +103,8 @@ class Phoenix(f:Option[Field] = None) extends SHCDataType {
       case ShortType => PSmallint.INSTANCE
       case StringType => PVarchar.INSTANCE
       case BinaryType => PVarbinary.INSTANCE
+      case TimestampType => PTimestamp.INSTANCE
+      case DateType => PDate.INSTANCE
       case _ => throw new UnsupportedOperationException(s"unsupported data type $input")
     }
   }
