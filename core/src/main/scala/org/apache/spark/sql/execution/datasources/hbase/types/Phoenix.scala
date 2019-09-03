@@ -51,6 +51,7 @@ class Phoenix(f:Option[Field] = None) extends SHCDataType {
       case data: String => PVarchar.INSTANCE.toBytes(data)
       case data: java.sql.Timestamp => PTimestamp.INSTANCE.toBytes(data)
       case data: java.sql.Date => PDate.INSTANCE.toBytes(data)
+      case null => null
       case _ => throw new UnsupportedOperationException(s"unsupported data type $input")
     }
   }
