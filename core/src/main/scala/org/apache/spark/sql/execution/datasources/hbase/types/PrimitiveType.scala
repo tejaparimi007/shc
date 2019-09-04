@@ -33,10 +33,16 @@ class PrimitiveType(f:Option[Field] = None) extends SHCDataType {
         case DoubleType => Bytes.toDouble(src)
         case FloatType => Bytes.toFloat(src)
         case IntegerType => Bytes.toInt(src)
+        case DecimalType.DoubleDecimal => Bytes.toBigDecimal(src)
+        case DecimalType.BigIntDecimal => Bytes.toBigDecimal(src)
+        case DecimalType.FloatDecimal => Bytes.toBigDecimal(src)
+        case DecimalType.IntDecimal => Bytes.toBigDecimal(src)
+        case DecimalType.LongDecimal => Bytes.toBigDecimal(src)
         case LongType => Bytes.toLong(src)
         case ShortType => Bytes.toShort(src)
         case StringType => toUTF8String(src, src.length)
         case BinaryType => src
+        case null => null
         case _ => throw new UnsupportedOperationException(s"unsupported data type ${f.get.dt}")
       }
     } else {
@@ -58,6 +64,7 @@ class PrimitiveType(f:Option[Field] = None) extends SHCDataType {
       case data: Short => Bytes.toBytes(data)
       case data: UTF8String => data.getBytes
       case data: String => Bytes.toBytes(data)
+      case data: java.math.BigDecimal => Bytes.toBytes(data)
       case null => null
       case _ => throw new
           UnsupportedOperationException(s"PrimitiveType coder: unsupported data type $input")
@@ -94,6 +101,11 @@ class PrimitiveType(f:Option[Field] = None) extends SHCDataType {
       case LongType => Bytes.toLong(src, offset)
       case ShortType => Bytes.toShort(src, offset)
       case StringType => toUTF8String(src, length, offset)
+      case DecimalType.DoubleDecimal => Bytes.toBigDecimal(src)
+      case DecimalType.BigIntDecimal => Bytes.toBigDecimal(src)
+      case DecimalType.FloatDecimal => Bytes.toBigDecimal(src)
+      case DecimalType.IntDecimal => Bytes.toBigDecimal(src)
+      case DecimalType.LongDecimal => Bytes.toBigDecimal(src)
       case BinaryType =>
         val newArray = new Array[Byte](length)
         System.arraycopy(src, offset, newArray, 0, length)

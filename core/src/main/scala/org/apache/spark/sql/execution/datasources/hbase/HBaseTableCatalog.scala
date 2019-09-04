@@ -264,18 +264,28 @@ object HBaseTableCatalog {
     // If the catalog version specified by users is equal or later than 2.0, tableCoder must be specified.
     // The default catalog version is 1.0, which uses 'PrimitiveType' as the default 'tableCoder'.
     val vNum = tableMeta.getOrElse(cVersion, "1.0").asInstanceOf[String]
-    val tCoder = {
-      if (CatalogVersion(vNum).compareTo(CatalogVersion("2.0")) < 0) {
-        tableMeta.getOrElse(tableCoder, SparkHBaseConf.PrimitiveType).asInstanceOf[String]
-      } else {
-        val tc = tableMeta.get(tableCoder)
-        if (tc.isEmpty) {
-          throw new CatalogDefinitionException("Please specify 'tableCoder' in your catalog " +
-            "if the catalog version is equal or later than 2.0")
-        }
-        tc.get.asInstanceOf[String]
-      }
+
+    val tCoder = if(tableCoder.equalsIgnoreCase("Phoenix")){
+      SparkHBaseConf.Phoenix.asInstanceOf[String]
+    }else if(tableCoder.equalsIgnoreCase("Avro")){
+      SparkHBaseConf.Avro.asInstanceOf[String]
+    }else{
+      SparkHBaseConf.PrimitiveType.asInstanceOf[String]
     }
+
+//    val tCoder = {
+//      if (CatalogVersion(vNum).compareTo(CatalogVersion("2.0")) < 0) {
+//        tableMeta.getOrElse(tableCoder, SparkHBaseConf.PrimitiveType).asInstanceOf[String]
+//      } else {
+//        val tc = tableMeta.get(tableCoder)
+//        if (tc.isEmpty) {
+//          throw new CatalogDefinitionException("Please specify 'tableCoder' in your catalog " +
+//            "if the catalog version is equal or later than 2.0")
+//        }
+//        tc.get.asInstanceOf[String]
+//      }
+//    }
+//    val tCoder =SparkHBaseConf.Phoenix.asInstanceOf[String]
     val schemaMap = mutable.LinkedHashMap.empty[String, Field]
     var coderSet = Set(tCoder)
     getColsPreservingOrder(jObj).foreach { case (name, column)=>

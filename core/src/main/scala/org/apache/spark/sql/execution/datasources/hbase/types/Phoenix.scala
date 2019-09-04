@@ -38,22 +38,21 @@ class Phoenix(f:Option[Field] = None) extends SHCDataType {
     }
   }
 
-  def toBytes(input: Any): Array[Byte] = {
-    input match {
-      case data: Boolean => PBoolean.INSTANCE.toBytes(data)
-      case data: Byte => PTinyint.INSTANCE.toBytes(data)
-      case data: Array[Byte] => PVarbinary.INSTANCE.toBytes(data)
-      case data: Double => PDouble.INSTANCE.toBytes(data)
-      case data: Float => PFloat.INSTANCE.toBytes(data)
-      case data: Int => PInteger.INSTANCE.toBytes(data)
-      case data: Long => PLong.INSTANCE.toBytes(data)
-      case data: Short => PSmallint.INSTANCE.toBytes(data)
-      case data: String => PVarchar.INSTANCE.toBytes(data)
-      case data: java.sql.Timestamp => PTimestamp.INSTANCE.toBytes(data)
-      case data: java.sql.Date => PDate.INSTANCE.toBytes(data)
-      case null => null
-      case _ => throw new UnsupportedOperationException(s"unsupported data type $input")
-    }
+  def toBytes(input: Any): Array[Byte] = input match {
+    case data: Boolean => PBoolean.INSTANCE.toBytes(data)
+    case data: Byte => PTinyint.INSTANCE.toBytes(data)
+    case data: Array[Byte] => PVarbinary.INSTANCE.toBytes(data)
+    case data: Double => PDouble.INSTANCE.toBytes(data)
+    case data: Float => PFloat.INSTANCE.toBytes(data)
+    case data: Int => PInteger.INSTANCE.toBytes(data)
+    case data: Long => PLong.INSTANCE.toBytes(data)
+    case data: Short => PSmallint.INSTANCE.toBytes(data)
+    case data: String => PVarchar.INSTANCE.toBytes(data)
+    case data: java.sql.Timestamp => PTimestamp.INSTANCE.toBytes(data)
+    case data: java.sql.Date => PDate.INSTANCE.toBytes(data)
+    case data: java.math.BigDecimal => PDecimal.INSTANCE.toBytes(data)
+    case null => null
+    case _ => throw new UnsupportedOperationException(s"unsupported data type $input")
   }
 
   override def isRowKeySupported(): Boolean = true
@@ -106,6 +105,7 @@ class Phoenix(f:Option[Field] = None) extends SHCDataType {
       case BinaryType => PVarbinary.INSTANCE
       case TimestampType => PTimestamp.INSTANCE
       case DateType => PDate.INSTANCE
+      case null => null
       case _ => throw new UnsupportedOperationException(s"unsupported data type $input")
     }
   }
